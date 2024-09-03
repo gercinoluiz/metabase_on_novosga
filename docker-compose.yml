@@ -20,4 +20,33 @@ services:
     networks:
       - metanet1
     healthcheck:
-      test: ["CMD-SHELL", "curl --fail -I http://localhost:3000/api/health || exit 1
+      test: ["CMD-SHELL", "curl --fail -I http://localhost:3000/api/health || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    restart: always
+
+  postgres:
+    image: postgres:latest
+    container_name: postgres_metabase_v1
+    hostname: postgres
+    environment:
+      POSTGRES_USER: metabase
+      POSTGRES_DB: metabaseappdb
+      POSTGRES_PASSWORD: "Prodam2024*NovoSGA!"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - metanet1
+    restart: always
+
+volumes:
+  metabase_data:
+    driver: local
+  postgres_data:
+    driver: local
+
+networks:
+  metanet1:
+    driver: bridge
