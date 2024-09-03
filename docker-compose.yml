@@ -1,51 +1,23 @@
-version: "3.9"
+version: '3.8'
+
 services:
   metabase:
     image: metabase/metabase:latest
-    container_name: metabase
-    restart: always
+    container_name: metabase_v1
     hostname: metabase
     volumes:
+      - metabase_data:/metabase-data
       - /dev/urandom:/dev/random:ro
     ports:
-      - 3001:3000
+      - "3000:3000"
     environment:
-      MB_DB_TYPE: mysql
+      MB_DB_TYPE: postgres
       MB_DB_DBNAME: metabaseappdb
-      MB_DB_PORT: 3307
+      MB_DB_PORT: 5432
       MB_DB_USER: metabase
-      MB_DB_PASS: prod@m01
-      MB_DB_HOST: metabase_mysql
-      MB_APPLICATION_LOGO_URL: https://portal.prodam.sp.gov.br/image/company_logo?img_id=71317&t=1704746484853
+      MB_DB_PASS: "Prodam2024*NovoSGA!"
+      MB_DB_HOST: postgres
     networks:
       - metanet1
     healthcheck:
-      test: curl --fail -I http://localhost:3000/api/health || exit 1
-      interval: 15s
-      timeout: 5s
-      retries: 5
-
-  metabase_mysql:
-    image: mysql:5.7
-    container_name: metabase_mysql
-    restart: always
-    environment:
-      MYSQL_USER: 'metabase'
-      MYSQL_DATABASE: 'metabaseappdb'
-      MYSQL_ROOT_PASSWORD: 'prod@m01'
-      MYSQL_PASSWORD: 'prod@m01'
-      TZ: 'America/Sao_Paulo'
-    networks:
-      - metanet1
-    ports:
-      - "3307:3306"
-    command: --default-authentication-plugin=mysql_native_password --bind-address=0.0.0.0
-    volumes:
-      - metabase-mysql-data:/var/lib/mysql
-
-networks:
-  metanet1:
-    driver: bridge
-
-volumes:
-  metabase-mysql-data:
+      test: ["CMD-SHELL", "curl --fail -I http://localhost:3000/api/health || exit 1
